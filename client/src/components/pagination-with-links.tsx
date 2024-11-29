@@ -20,7 +20,7 @@ import {
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { cn } from "@/lib/utils";
 
-export interface JobPaginationProps {
+export interface PaginationWithLinksProps {
     pageSizeSelectOptions?: {
         pageSizeSearchParam?: string;
         pageSizeOptions: number[];
@@ -31,13 +31,13 @@ export interface JobPaginationProps {
     pageSearchParam?: string;
 }
 
-export default function JobPagination({
+export default function PaginationWithLinks({
     pageSizeSelectOptions,
     pageSize,
     totalCount,
     page,
     pageSearchParam,
-}: JobPaginationProps) {
+}: PaginationWithLinksProps) {
     const router = useRouter();
     const pathname = usePathname();
     const searchParams = useSearchParams();
@@ -78,10 +78,7 @@ export default function JobPagination({
                         <PaginationLink
                             href={buildLink(i)}
                             isActive={page === i}
-                            className={cn(
-                                "bg-gray-900 border-gray-800 hover:bg-gray-800 hover:border-gray-700 hover:text-white",
-                                page === i ? "bg-purple-500 border-purple-500" : ""
-                            )}
+                            className="bg-secondary"
                         >
                             {i}
                         </PaginationLink>
@@ -94,10 +91,7 @@ export default function JobPagination({
                     <PaginationLink
                         href={buildLink(1)}
                         isActive={page === 1}
-                        className={cn(
-                            "bg-gray-900 border-gray-800 hover:bg-gray-800 hover:border-gray-700 hover:text-white",
-                            page === 1 ? "bg-purple-500 border-purple-500" : ""
-                        )}
+                        className="bg-primary"
                     >
                         1
                     </PaginationLink>
@@ -121,10 +115,7 @@ export default function JobPagination({
                         <PaginationLink
                             href={buildLink(i)}
                             isActive={page === i}
-                            className={cn(
-                                "bg-gray-900 border-gray-800 hover:bg-gray-800 hover:border-gray-700 hover:text-white",
-                                page === i ? "bg-purple-500 border-purple-500 hover:text-white" : ""
-                            )}
+                            className="bg-secondary"
                         >
                             {i}
                         </PaginationLink>
@@ -145,10 +136,7 @@ export default function JobPagination({
                     <PaginationLink
                         href={buildLink(totalPageCount)}
                         isActive={page === totalPageCount}
-                        className={cn(
-                            "bg-gray-900 border-gray-800 hover:bg-gray-800 hover:border-gray-700 hover:text-white",
-                            page === totalPageCount ? "bg-purple-500 border-purple-500" : ""
-                        )}
+                        className="bg-secondary"
                     >
                         {totalPageCount}
                     </PaginationLink>
@@ -172,7 +160,7 @@ export default function JobPagination({
             )}
             <Pagination
                 className={cn({
-                    "md:justify-end bg-[#1a1d24] p-2 rounded-sm w-fit": pageSizeSelectOptions,
+                    "md:justify-end bg-card px-3 py-2 rounded-md w-fit": pageSizeSelectOptions,
                 })}
             >
                 <PaginationContent className="max-sm:gap-0">
@@ -182,7 +170,7 @@ export default function JobPagination({
                             aria-disabled={page === 1}
                             tabIndex={page === 1 ? -1 : undefined}
                             className={cn(
-                                "bg-gray-900 border-gray-800 hover:bg-gray-800 hover:border-gray-700 hover:text-white",
+                                "bg-secondary mr-2",
                                 page === totalPageCount
                                     ? "pointer-events-none opacity-50"
                                     : undefined
@@ -196,7 +184,7 @@ export default function JobPagination({
                             aria-disabled={page === totalPageCount}
                             tabIndex={page === totalPageCount ? -1 : undefined}
                             className={cn(
-                                "bg-gray-900 border-gray-800 hover:bg-gray-800 hover:border-gray-700 hover:text-white",
+                                "bg-secondary ml-2",
                                 page === totalPageCount
                                     ? "pointer-events-none opacity-50"
                                     : undefined
@@ -219,25 +207,21 @@ function SelectRowsPerPage({
     pageSize: number;
 }) {
     return (
-        <div className="flex items-center gap-4">
-            <div className="flex items-center space-x-4 bg-[#1a1d24] p-2 rounded-sm">
-                <span className="text-sm text-gray-400">Show</span>
-                <Select
-                    value={String(pageSize)}
-                    onValueChange={(value) => setPageSize(Number(value))}
-                >
-                    <SelectTrigger className="w-[70px] bg-gray-800 border-gray-800">
-                        <SelectValue placeholder="Select page size">{String(pageSize)}</SelectValue>
-                    </SelectTrigger>
-                    <SelectContent>
-                        {options.map((option) => (
-                            <SelectItem key={option} value={String(option)}>
-                                {option}
-                            </SelectItem>
-                        ))}
-                    </SelectContent>
-                </Select>
-            </div>
+        <div className="flex items-center gap-4 bg-card px-3 py-2 rounded-md w-fit">
+            <span className="whitespace-nowrap text-sm">Show</span>
+
+            <Select value={String(pageSize)} onValueChange={(value) => setPageSize(Number(value))}>
+                <SelectTrigger>
+                    <SelectValue placeholder="Select page size">{String(pageSize)}</SelectValue>
+                </SelectTrigger>
+                <SelectContent>
+                    {options.map((option) => (
+                        <SelectItem key={option} value={String(option)}>
+                            {option}
+                        </SelectItem>
+                    ))}
+                </SelectContent>
+            </Select>
         </div>
     );
 }

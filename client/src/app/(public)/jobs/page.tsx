@@ -1,5 +1,5 @@
-import JobCardList from "@/components/job-card-list";
-import JobPagination from "@/components/job-pagination";
+import JobCard from "@/components/job-card";
+import PaginationWithLinks from "@/components/pagination-with-links";
 
 type Props = {
     searchParams: {
@@ -15,30 +15,34 @@ interface Job {
     description: string;
     isRemote: boolean;
     isFullTime: boolean;
+    // link?: string;
 }
 
 export default async function Page({ searchParams }: Props) {
     const page = parseInt(searchParams.page || "1", 10);
-    const pageSize = parseInt(searchParams.pageSize || "20", 10);
-
-    // console.log("Fetching jobs for page", page, "with page size", pageSize);
-
+    const pageSize = parseInt(searchParams.pageSize || "9", 10);
     const [data, count] = await getJobsWithCount(page, pageSize);
 
     return (
-        <div className="min-h-screen bg-gray-950 text-gray-100 p-20">
+        <div className="min-h-screen md:p-20 p-8">
             <div className="max-w-6xl mx-auto space-y-12">
                 {/*  Page Title*/}
                 <div className="text-center space-y-8">
-                    <h1 className="text-4xl font-bold">Latest Job Openings</h1>
-                    <p className="text-lg text-gray-400">
-                        Join our Waitlist and get access to Rumor for discounted early-bird prices.
+                    <h1 className="text-4xl font-bold text-foreground">Latest Job Openings</h1>
+                    <p className="text-lg text-muted-foreground">
+                        Join our waitlist and get access to Rumor for discounted early-bird prices.
                     </p>
                 </div>
 
-                <JobCardList data={data} />
+                {/* Job Card List */}
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-7">
+                    {data.map((item: Job, index: number) => (
+                        <JobCard key={index} item={item} />
+                    ))}
+                </div>
 
-                <JobPagination
+                {/* Job Pagination */}
+                <PaginationWithLinks
                     page={page}
                     pageSize={pageSize}
                     totalCount={count}
@@ -50,7 +54,6 @@ export default async function Page({ searchParams }: Props) {
 }
 
 async function getJobsWithCount(page: number, pageSize: number): Promise<[Job[], number]> {
-    // Total job list (simulating 500 jobs)
     const allJobs = Array(500)
         .fill({
             title: "Mern Stack Developer",
@@ -61,7 +64,6 @@ async function getJobsWithCount(page: number, pageSize: number): Promise<[Job[],
         })
         .map((job, index) => ({ ...job, id: index + 1, title: `${job.title} #${index + 1}` }));
 
-    // Slice the allJobs array to get the current page's jobs
     const start = (page - 1) * pageSize;
     const data = allJobs.slice(start, start + pageSize);
 
